@@ -1,0 +1,112 @@
+# =====================================
+# Python
+# =====================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.venv*/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# =====================================
+# Django
+# =====================================
+*.log
+*.pot
+*.pyc
+*.sqlite3
+*.sqlite
+db.sqlite3
+media/
+staticfiles/
+static_root/
+local_settings.py
+
+# Django migrations (keep __init__.py only)
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# =====================================
+# VS Code
+# =====================================
+.vscode/
+.history/
+*.code-workspace
+
+# =====================================
+# Environments & Secrets
+# =====================================
+.env
+.env.*
+*.env
+*.ini
+*.cfg
+*.toml
+secrets.json
+
+# =====================================
+# System files
+# =====================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =====================================
+# Coverage / testing
+# =====================================
+.coverage
+*.cover
+*.py,cover
+cover/
+coverage.xml
+*.lcov
+htmlcov/
+
+# =====================================
+# MyPy / Pylint / Pytest
+# =====================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.pytest_cache/
+
+# =====================================
+# Jupyter / notebooks
+# =====================================
+.ipynb_checkpoints
+*.ipynb
+
+# =====================================
+# Cache / temporary
+# =====================================
+.cache/
+tmp/
+temp/

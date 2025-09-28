@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ArrowLeft from '../assets/arrow-left.svg';
-
+import { getCookie } from '../utils/csrf'; 
 
 const NotePage = () => {
   const { id: noteId } = useParams();
@@ -32,6 +32,7 @@ const NotePage = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'), 
       },
       body: JSON.stringify(note),
     });
@@ -42,6 +43,7 @@ const NotePage = () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
       },
       body: JSON.stringify(note),
     });
@@ -51,7 +53,7 @@ const NotePage = () => {
     await fetch(`/api/notes/${noteId}/`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'), 
       },
     });
     navigate('/');

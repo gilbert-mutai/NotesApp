@@ -5,7 +5,13 @@ from rest_framework.decorators import api_view
 from .serializers import NoteSerializer
 from .models import Note
 from .utils import updateNote, getNoteDetail, deleteNote, getNotesList, createNote
+from django.views.generic import TemplateView
 
+class FrontendAppView(TemplateView):
+    template_name = 'frontend/index.html'
+
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 
 @api_view(['GET', 'POST'])

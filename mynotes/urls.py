@@ -16,9 +16,12 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path,include, re_path
+from api.views import FrontendAppView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+    # Catch-all for React
+    re_path(r'^.*$', FrontendAppView.as_view(), name='frontend'),
 ]

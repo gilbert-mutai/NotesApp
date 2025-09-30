@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - notes_network
+
+  notes_app:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000" 
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - notes_network
+
+volumes:
+  postgres_data:
+
+networks:
+  notes_network:
+    driver: bridge

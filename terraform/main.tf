@@ -160,6 +160,20 @@ resource "aws_eip_association" "eip_assoc" {
   depends_on    = [aws_instance.web_server]
 }
 
+
+# ----------------------------
+# Ansible Inventory Output
+# ----------------------------
+resource "local_file" "ansible_inventory" {
+  content = <<EOT
+  [webservers]
+  ${aws_eip.static_ip.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${abspath(path.module)}/notes-app_key.pem
+  EOT
+
+  filename = "${path.module}/../ansible/inventory.ini"
+}
+
+
 # ----------------------------
 # Outputs
 # ----------------------------

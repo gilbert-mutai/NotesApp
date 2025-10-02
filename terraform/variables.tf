@@ -39,3 +39,9 @@ variable "ami_id" {
   description = "AMI ID for Ubuntu"
   type        = string
 }
+
+variable "my_ip" {
+  description = "My current public IP for SSH access"
+  type        = string
+}
+

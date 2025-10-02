@@ -80,7 +80,7 @@ resource "aws_security_group" "allow_web" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["102.209.18.136/32"]
+    cidr_blocks = [var.my_ip]
   }
 
   ingress {
@@ -98,6 +98,23 @@ resource "aws_security_group" "allow_web" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  ingress {
+    description = "Prometheus"
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] 
+  }
+
+  ingress {
+    description = "Grafana"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] 
+  }
+
 
   egress {
     from_port   = 0
@@ -159,6 +176,20 @@ resource "aws_eip_association" "eip_assoc" {
   allocation_id = aws_eip.static_ip.id
   depends_on    = [aws_instance.web_server]
 }
+
+
+# ----------------------------
+# Ansible Inventory Output
+# ----------------------------
+resource "local_file" "ansible_inventory" {
+  content = <<EOT
+  [webservers]
+  ${aws_eip.static_ip.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${abspath(path.module)}/notes-app_key.pem
+  EOT
+
+  filename = "${path.module}/../ansible/inventory.ini"
+}
+
 
 # ----------------------------
 # Outputs

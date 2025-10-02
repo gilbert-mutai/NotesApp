@@ -1,0 +1,5 @@
+APP_NAME=NotesApp
+ENVIRONMENT=production
+MAINTAINER=gilbert-mutai
+ROLE=devops engineer
+LOG_LEVEL=INFO

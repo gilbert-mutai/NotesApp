@@ -1,0 +1,46 @@
+---
+- name: Deploy Monitoring Stack
+  hosts: all
+  become: true
+
+  vars:
+    devops_group: devops
+    app_user: ubuntu
+
+  tasks:
+    - name: Create monitoring directory
+      ansible.builtin.file:
+        path: /opt/monitoring
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0755'
+
+    - name: Copy monitoring Docker Compose file
+      ansible.builtin.copy:
+        src: files/monitoring/docker-compose.yml
+        dest: /opt/monitoring/docker-compose.yml
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0644'
+
+    - name: Copy Prometheus configuration file
+      ansible.builtin.copy:
+        src: files/monitoring/prometheus.yml
+        dest: /opt/monitoring/prometheus.yml
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0644'
+
+    - name: Copy monitoring env file
+      ansible.builtin.copy:
+        src: files/monitoring/.env
+        dest: /opt/monitoring/.env
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0600'
+
+    - name: Deploy monitoring containers
+      ansible.builtin.command: docker-compose -f /opt/monitoring/docker-compose.yml up -d
+      args:
+        chdir: /opt/monitoring

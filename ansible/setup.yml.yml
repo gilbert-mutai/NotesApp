@@ -1,0 +1,141 @@
+---
+- name: Configure EC2 for DevOps tasks
+  hosts: all
+  become: true
+
+  vars:
+    devops_group: devops
+    app_user: ubuntu
+    app_dir: "/home/{{ app_user }}/notesapp"
+
+  tasks:
+    # ---------------------------
+    # Ensure devops group exists
+    # ---------------------------
+    - name: Create devops group
+      ansible.builtin.group:
+        name: "{{ devops_group }}"
+        state: present
+
+    # ---------------------------
+    # Copy sample config file
+    # ---------------------------
+    - name: Copy config.txt to /opt/
+      ansible.builtin.copy:
+        src: files/config.txt
+        dest: /opt/config.txt
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0660'
+
+    # ---------------------------
+    # Install PostgreSQL
+    # ---------------------------
+    - name: Install PostgreSQL
+      ansible.builtin.apt:
+        name: postgresql
+        state: latest
+        update_cache: yes
+
+    - name: Ensure PostgreSQL service is enabled and running
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: true
+
+    # ---------------------------
+    # Install and configure Nginx
+    # ---------------------------
+    - name: Install Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Ensure Nginx is enabled and running
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+    # ---------------------------
+    # Install Docker
+    # ---------------------------
+    - name: Install prerequisites for Docker
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker-ce
+        state: latest
+        update_cache: yes
+
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ app_user }}"
+        groups: docker
+        append: yes
+
+    # ---------------------------
+    # Install Docker Compose
+    # ---------------------------
+    - name: Install Docker Compose
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    # ---------------------------
+    # Setup application directory (/home/ubuntu/notesapp)
+    # ---------------------------
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0755'
+
+    - name: Copy docker-compose.yml
+      ansible.builtin.copy:
+        src: ../docker-compose.yml
+        dest: "{{ app_dir }}/docker-compose.yml"
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0644'
+
+    - name: Copy .env file
+      ansible.builtin.copy:
+        src: ../.env
+        dest: "{{ app_dir }}/.env"
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"
+        mode: '0600'
+
+    # ---------------------------
+    # Ensure correct ownership
+    # ---------------------------
+    - name: Ensure correct ownership for /home/ubuntu/notesapp
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        recurse: yes
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"

@@ -6,9 +6,9 @@
   vars:
     devops_group: devops
     app_user: ubuntu
+    app_dir: "/home/{{ app_user }}/notesapp"
 
   tasks:
-
     # ---------------------------
     # Ensure devops group exists
     # ---------------------------
@@ -44,7 +44,7 @@
         enabled: true
 
     # ---------------------------
-    # Install and configure web server (Nginx)
+    # Install and configure Nginx
     # ---------------------------
     - name: Install Nginx
       ansible.builtin.apt:
@@ -102,43 +102,40 @@
         dest: /usr/local/bin/docker-compose
         mode: '0755'
 
-
     # ---------------------------
-    # Deploy monitoring stack via Docker Compose
+    # Setup application directory (/home/ubuntu/notesapp)
     # ---------------------------
-    - name: Create monitoring directory
+    - name: Create application directory
       ansible.builtin.file:
-        path: /opt/monitoring
+        path: "{{ app_dir }}"
         state: directory
         owner: "{{ app_user }}"
         group: "{{ devops_group }}"
         mode: '0755'
 
-    - name: Copy monitoring Docker Compose file
+    - name: Copy docker-compose.yml
       ansible.builtin.copy:
-        src: files/monitoring/docker-compose.yml
-        dest: /opt/monitoring/docker-compose.yml
+        src: ../docker-compose.yml
+        dest: "{{ app_dir }}/docker-compose.yml"
         owner: "{{ app_user }}"
         group: "{{ devops_group }}"
         mode: '0644'
 
-    - name: Copy Prometheus configuration file
+    - name: Copy .env file
       ansible.builtin.copy:
-        src: files/monitoring/prometheus.yml
-        dest: /opt/monitoring/prometheus.yml
-        owner: "{{ app_user }}"
-        group: "{{ devops_group }}"
-        mode: '0644'
-
-    - name: Copy monitoring env file
-      ansible.builtin.copy:
-        src: files/monitoring/.env
-        dest: /opt/monitoring/.env
+        src: ../.env
+        dest: "{{ app_dir }}/.env"
         owner: "{{ app_user }}"
         group: "{{ devops_group }}"
         mode: '0600'
 
-    - name: Deploy monitoring containers
-      ansible.builtin.command: docker-compose -f /opt/monitoring/docker-compose.yml up -d
-      args:
-        chdir: /opt/monitoring
+    # ---------------------------
+    # Ensure correct ownership
+    # ---------------------------
+    - name: Ensure correct ownership for /home/ubuntu/notesapp
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        recurse: yes
+        owner: "{{ app_user }}"
+        group: "{{ devops_group }}"

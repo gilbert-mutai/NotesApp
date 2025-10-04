@@ -54,6 +54,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_HOST: localhost
         run: |
+          python manage.py makemigrations api
           python manage.py migrate
 
 

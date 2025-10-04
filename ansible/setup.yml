@@ -7,6 +7,9 @@
     devops_group: devops
     app_user: ubuntu
     app_dir: "/home/{{ app_user }}/notesapp"
+    server_name: "yourdomain.com"
+    django_static_path: "{{ app_dir }}/static"
+    django_media_path: "{{ app_dir }}/media"
 
   tasks:
     # ---------------------------
@@ -51,6 +54,30 @@
         name: nginx
         state: latest
         update_cache: yes
+
+    - name: Copy custom NGINX config for notesapp
+      ansible.builtin.template:
+        src: files/notesapp_nginx.conf.j2
+        dest: /etc/nginx/sites-available/notesapp
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable NGINX site
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/notesapp
+        dest: /etc/nginx/sites-enabled/notesapp
+        state: link
+
+    - name: Remove default NGINX site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Test NGINX configuration
+      ansible.builtin.command: nginx -t
+      register: nginx_test
+      failed_when: "'successful' not in nginx_test.stderr"
 
     - name: Ensure Nginx is enabled and running
       ansible.builtin.service:
@@ -103,7 +130,7 @@
         mode: '0755'
 
     # ---------------------------
-    # Setup application directory (/home/ubuntu/notesapp)
+    # Setup application directory
     # ---------------------------
     - name: Create application directory
       ansible.builtin.file:

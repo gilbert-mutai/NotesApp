@@ -99,15 +99,6 @@ resource "aws_security_group" "allow_web" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-    ingress {
-    description = "Django App (Port 8000)"
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-
   ingress {
     description = "Prometheus"
     from_port   = 9090

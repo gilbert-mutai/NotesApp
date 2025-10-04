@@ -21,4 +21,6 @@ pytest-django==4.11.1
 requests==2.31.0 
 idna==3.3
 whitenoise==6.5.0
+gunicorn>=21.2.0
+
 

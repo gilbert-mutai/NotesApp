@@ -90,10 +90,10 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/notesapp:${{ github.sha }} .
-          docker tag ${{ secrets.DOCKER_USERNAME }}/notesapp:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/notesapp:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/notesapp:${{ github.sha }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/notesapp:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/notes-app:${{ github.sha }} .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/notes-app:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/notesapp:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/notes-app:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/notes-app:latest
 
   # ==========================
   # DEPLOY STAGE

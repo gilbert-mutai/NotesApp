@@ -77,7 +77,7 @@
     - name: Test NGINX configuration
       ansible.builtin.command: nginx -t
       register: nginx_test
-      failed_when: "'successful' not in nginx_test.stdout"
+      failed_when: "'successful' not in nginx_test.stderr"
 
     - name: Ensure Nginx is enabled and running
       ansible.builtin.service:

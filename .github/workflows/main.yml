@@ -66,6 +66,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_HOST: localhost
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           pytest -q --tb=short -s --color=yes
 

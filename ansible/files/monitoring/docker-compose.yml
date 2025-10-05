@@ -7,6 +7,8 @@ services:
     ports:
       - "9090:9090"
     restart: always
+    networks:
+      - notesapp_notes_network
 
   grafana:
     image: grafana/grafana:latest
@@ -20,13 +22,19 @@ services:
     restart: always
     volumes:
       - grafana_data:/var/lib/grafana
+    networks:
+      - notesapp_notes_network
 
   node_exporter:
     image: prom/node-exporter:latest
     container_name: node_exporter
     restart: always
     network_mode: "host"
-    pid: "host"            
+    pid: "host"
 
 volumes:
   grafana_data:
+
+networks:
+  notesapp_notes_network:
+    external: true

@@ -22,6 +22,9 @@ from api.views import FrontendAppView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+    
+        # Prometheus metrics
+    path('metrics/', include('django_prometheus.urls')),
     # Catch-all for React
     re_path(r'^.*$', FrontendAppView.as_view(), name='frontend'),
 ]

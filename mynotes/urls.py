@@ -16,17 +16,18 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path,include, re_path
+from django.urls import path, include, re_path
 from api.views import FrontendAppView
 
 urlpatterns = [
-    # Prometheus metrics
-    path('metrics/', include('django_prometheus.urls')),
+    # Prometheus metrics endpoint
+    path('', include('django_prometheus.urls')),
 
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
 
-    # Catch-all for React frontend
-    re_path(r'^.*$', FrontendAppView.as_view(), name='frontend'),
+    # Catch-all for React frontend, excluding /metrics
+    re_path(r"^(?!metrics/?$).*", FrontendAppView.as_view(), name="frontend"),
 ]
+
 

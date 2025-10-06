@@ -8,7 +8,7 @@ services:
       - "9090:9090"
     restart: always
     networks:
-      - notes_network
+      - notesapp_notes_network
 
   grafana:
     image: grafana/grafana:latest
@@ -23,7 +23,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     networks:
-      - notes_network
+      - notesapp_notes_network
 
   node_exporter:
     image: prom/node-exporter:latest
@@ -36,5 +36,5 @@ volumes:
   grafana_data:
 
 networks:
-  notes_network:
+  notesapp_notes_network:
     external: true

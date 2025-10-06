@@ -27,4 +27,4 @@ volumes:
 
 networks:
   notes_network:
-    driver: bridge
+    external: true 

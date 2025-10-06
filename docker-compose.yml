@@ -2,6 +2,7 @@
 services:
   db:
     image: postgres:15
+    container_name: notes_db
     restart: always
     env_file:
       - .env
@@ -12,6 +13,7 @@ services:
 
   notes_app:
     image: gmutai/notes-app:latest
+    container_name: notes_app
     restart: always
     ports:
       - "8000:8000"
